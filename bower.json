@@ -1,0 +1,26 @@
+{
+  "name": "Teleprompter",
+  "description": "Moschd ma on Telepromptha",
+  "main": "app.js",
+  "authors": [
+    "David Schwarz <schwarz.david10@gmail.com>"
+  ],
+  "license": "Apache 2.0",
+  "moduleType": [
+    "node"
+  ],
+  "homepage": "http://schwarzdavid.rocks",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.7",
+    "angular-route": "~1.4.7",
+    "jquery": "~2.1.4"
+  }
+}
