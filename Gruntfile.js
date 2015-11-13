@@ -16,7 +16,7 @@ module.exports = function(grunt){
 			task: {
 				files: [
 					{
-						src: ["web/private/js/**/*.js"],
+						src: ["web/private/js/module.js", "web/private/js/*/**/*.js"],
 						dest: "web/public/js/main.js"
 					}
 				]
@@ -67,7 +67,7 @@ module.exports = function(grunt){
 		usebanner: {
 			options: {
 				position: "top",
-				banner: "/* (c) 2015 by David Schwarz */\n"
+				banner: "/* Teleprompter (c) 2015 by David Schwarz */\n"
 			},
 			css: {
 				files: {

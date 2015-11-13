@@ -1,0 +1,3 @@
+teleprompter.controller('hostCtrl', [function(){
+	
+}]);
