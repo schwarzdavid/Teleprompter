@@ -2,8 +2,9 @@ var express = require('express'),
 	sio = require('socket.io'),
 	fs = require('fs'),
 	session = require('express-session'),
+	manager = require('./core/manager.js'),
 	app = express(),
-	http, room, manager;
+	http;
 
 app.set('views', 'web/views');
 app.set('view engine', 'ejs');
@@ -40,58 +41,21 @@ http = app.listen(80, function(err){
 
 sio = sio(http);
 
-manager = (function(){
-	var rooms = {}, Room, genId;
-	
-	genId = function(){
-		var id = Math.floor(Math.random() * 90000 + 10000);
-		if(rooms[id]){
-			return genId();
-		}
-		return id;
-	}
-	
-	Room = function(con){
-		var owner = con;
-		
-		this.addClient = function(con){
-			
-		};
-	};
-
-	return {
-		createRoom: function(admin){
-			var r = new Room(admin),
-				id = genId();
-			
-			rooms[id] = r;
-			
-			return id;
-		},
-		
-		findRoom: function(rid){
-			if(rid && rooms[rid]){
-				return rooms[rid];
-			}
-			return false;
-		}
-	}
-}());
-
 sio.on('connection', function(socket){
 	socket.room = null;
 	
-	socket.on('host', function(data){
+	socket.on('host', function(){
 		if(!socket.room){
 			socket.room = manager.createRoom(socket);
 		}
+		socket.emit('host', socket.room);
 	});
 	
 	socket.on('join', function(data){
-		console.log(data);
 		var r = manager.findRoom(data);
 		if(r){
 			r.addClient(socket);
+			socket.emit('join', data);
 		}
 	});
 });

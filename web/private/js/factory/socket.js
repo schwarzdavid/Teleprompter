@@ -4,7 +4,7 @@ teleprompter.factory('socket', [function(){
 		on: function(eventName, callback){
 			socket.on(eventName, function(){
 				var argv = arguments;
-				callback.apply(argv);
+				callback(argv);
 			});
 		},
 
