@@ -20,6 +20,15 @@ teleprompter.config(['stateHelperProvider', '$urlRouterProvider', function(state
 			}
 		}
 	}).state({
+		name: 'client',
+		url: '/client',
+		views: {
+			'main': {
+				template: 'Client bitch :@',
+				controller: 'clientCtrl'
+			}
+		}
+	}).state({
 		name: 'err404',
 		url: '/err404',
 		views: {

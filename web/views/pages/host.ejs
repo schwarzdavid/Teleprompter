@@ -8,10 +8,10 @@
 	<span>Clicken Sie auf einen Host zum die Übertragung zu starten</span>
 	<div class="hosts">
 		<h3 ng-hide="hosts">Keine Hosts verbunden!</h3>
-		<div class="host" ng-repeat="host in hosts">
+		<div class="host" ng-repeat="client in clients">
 			<i class="fa fa-desktop"></i>
-			<span class="ip">{{ host.ip }}</span>
-			<span class="resolution">{{ host.width }}x{{ host.height }}</span>
+			<span class="ip">{{ client.ip }}</span>
+			<span class="resolution">{{ client.width }}x{{ client.height }}</span>
 		</div>
 	</div>
 </div>

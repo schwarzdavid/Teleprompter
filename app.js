@@ -40,7 +40,6 @@ http = app.listen(80, function(err){
 });
 
 sio = sio(http);
-
 sio.on('connection', function(socket){
 	socket.room = null;
 	
@@ -52,9 +51,9 @@ sio.on('connection', function(socket){
 	});
 	
 	socket.on('join', function(data){
-		var r = manager.findRoom(data);
+		var r = manager.findRoom(data.rid);
 		if(r){
-			r.addClient(socket);
+			r.addClient(socket, data.resolution);
 			socket.emit('join', data);
 		}
 	});

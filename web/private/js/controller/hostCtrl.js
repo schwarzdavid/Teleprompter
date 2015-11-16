@@ -12,7 +12,10 @@ teleprompter.controller('hostCtrl', ['$scope', '$rootScope', '$http', 'socket', 
 		socket.emit('setText', $scope.text);
 	});
 	
-	socket.on('setClients', function(data){
-		$scope.clients = data;
+	socket.on('client', function(data){
+		console.log(data[0]);
+		$scope.$apply(function(){
+			$scope.clients = data[0];
+		});
 	});
 }]);

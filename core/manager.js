@@ -13,8 +13,8 @@ module.exports = (function(){
 
 	return {
 		createRoom: function(admin){
-			var r = new Room(admin),
-				id = genId();
+			var id = genId(),
+				r = new Room(admin, id);
 			
 			rooms[id] = r;
 			
@@ -26,6 +26,13 @@ module.exports = (function(){
 				return rooms[rid];
 			}
 			return false;
+		},
+		
+		deleteRoom: function(rid){
+			if(rid && rooms[rid]){
+				rooms[rid] = null;
+				delete rooms[rid];
+			}
 		}
 	};
 }());
