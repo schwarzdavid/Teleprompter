@@ -33,6 +33,15 @@ module.exports = (function(){
 				rooms[rid] = null;
 				delete rooms[rid];
 			}
+		},
+		
+		findClient: function(sid){
+			for(var i in rooms){
+				if(rooms[i].findClient(sid)){
+					return true;
+				}
+			}
+			return false;
 		}
 	};
 }());

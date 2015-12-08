@@ -26,8 +26,16 @@ teleprompter.config(['stateHelperProvider', '$urlRouterProvider', function(state
 		url: '/client',
 		views: {
 			'main': {
-				template: 'Client bitch :@',
+				templateUrl: '/page/client.html',
 				controller: 'clientCtrl'
+			}
+		}
+	}).state({
+		name: 'play',
+		views: {
+			'main': {
+				templateUrl: '/page/play.html',
+				controller: 'playCtrl'
 			}
 		}
 	}).state({
@@ -43,6 +51,22 @@ teleprompter.config(['stateHelperProvider', '$urlRouterProvider', function(state
 	$urlRouterProvider.when('', '/');
 	$urlRouterProvider.otherwise('/err404');
 }]);
+
+teleprompter.run(['$state', 'socket', function($state, socket){
+	if(!$state.is('root')){
+		socket.emit('isConnected');
+		socket.on('isConntected', function(data){
+			if(!data){
+				$state.go('root');
+			}
+		});
+	}
+	
+	socket.on('disconnect', function(){
+		console.log("disconnected");
+		$state.go('root');
+	});
+}]);
 teleprompter.controller('clientCtrl', ['$scope', '$rootScope', '$http', '$window', '$state', 'socket', function($scope, $rootScope, $http, $window, $state, socket){
 	function sendResolution(){
 		socket.emit('setResolution', { 
@@ -53,17 +77,15 @@ teleprompter.controller('clientCtrl', ['$scope', '$rootScope', '$http', '$window
 	sendResolution();
 	angular.element($window).on('resize', sendResolution);
 	
-	socket.on('disconnect', function(){
-		console.log("disconnected");
+	socket.on('kick', function(){
 		$state.go('root');
 	});
 	
-	socket.on('kick', function(){
-		console.log("kicked");
-		$state.go('root');
+	socket.on('play', function(data){
+		$scope.text = data;
 	});
 }]);
-teleprompter.controller('hostCtrl', ['$scope', '$rootScope', '$http', 'socket', function($scope, $rootScope, $http, socket){
+teleprompter.controller('hostCtrl', ['$scope', '$rootScope', '$state', '$http', 'socket', function($scope, $rootScope, $state, $http, socket){
 	$scope.roomId = 'n/a';
 	
 	socket.emit('host');
@@ -73,16 +95,23 @@ teleprompter.controller('hostCtrl', ['$scope', '$rootScope', '$http', 'socket', 
 		});
 	});
 	
-	$scope.$watch('text', function(){
-		socket.emit('setText', $scope.text);
+	$rootScope.$watch('text', function(){
+		socket.emit('setText', $rootScope.text);
 	});
 	
+	socket.emit('updateClients');
 	socket.on('client', function(data){
-		console.log(data[0]);
 		$scope.$apply(function(){
 			$scope.clients = data[0];
 		});
 	});
+	
+	$scope.play = function($event, id){
+		$event.preventDefault();
+		
+		socket.emit('play', id);
+		$state.go('play');
+	};
 }]);
 teleprompter.controller('mainCtrl', ['$scope', '$state', '$window', 'socket', function($scope, $state, $window, socket){
 	socket.emit('disconnect', true);
@@ -99,6 +128,25 @@ teleprompter.controller('mainCtrl', ['$scope', '$state', '$window', 'socket', fu
 	socket.on('join', function(data){
 		$state.go('client');
 	});
+}]);
+teleprompter.controller('playCtrl', ['$scope', '$state', 'socket', function($scope, $state, socket){
+	socket.emit('init');
+	
+	socket.on('kick', function(){
+		$state.go('host');
+	});
+}]);
+teleprompter.directive('teleprompter', ['socket', function(socket){
+	return {
+		restrict: 'AE',
+		templateUrl: '/page/teleprompter.html',
+		replace: false,
+		link: function(scope, el, attr){
+			socket.on('text', function(data){
+				scope.teleText = data;
+			});
+		}
+	};
 }]);
 teleprompter.factory('socket', [function(){
 	var socket = io.connect();

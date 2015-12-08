@@ -3,15 +3,17 @@
 	<span>Room ID: <strong>{{ roomId }}</strong></span>
 	
 	<span>Geben Sie hier den Text ein:</span>
-	<textarea ng-model="text"></textarea>
+	<textarea ng-model="$root.text"></textarea>
 	
 	<span>Clicken Sie auf einen Host zum die Übertragung zu starten</span>
 	<div class="hosts">
-		<h3 ng-hide="hosts">Keine Hosts verbunden!</h3>
-		<div class="host" ng-repeat="client in clients">
-			<i class="fa fa-desktop"></i>
-			<span class="ip">{{ client.ip }}</span>
-			<span class="resolution">{{ client.width }}x{{ client.height }}</span>
+		<h3 ng-hide="clients">Keine Hosts verbunden!</h3>
+		<div class="clients" ng-repeat="client in clients">
+			<div ng-click="play($event, client.id)">
+				<i class="fa fa-desktop"></i>
+				<span class="ip">{{ client.ip }}</span>
+				<span class="resolution">{{ client.width }}x{{ client.height }}</span>
+			</div>
 		</div>
 	</div>
 </div>

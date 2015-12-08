@@ -24,8 +24,16 @@ teleprompter.config(['stateHelperProvider', '$urlRouterProvider', function(state
 		url: '/client',
 		views: {
 			'main': {
-				template: 'Client bitch :@',
+				templateUrl: '/page/client.html',
 				controller: 'clientCtrl'
+			}
+		}
+	}).state({
+		name: 'play',
+		views: {
+			'main': {
+				templateUrl: '/page/play.html',
+				controller: 'playCtrl'
 			}
 		}
 	}).state({
@@ -40,4 +48,20 @@ teleprompter.config(['stateHelperProvider', '$urlRouterProvider', function(state
 	
 	$urlRouterProvider.when('', '/');
 	$urlRouterProvider.otherwise('/err404');
+}]);
+
+teleprompter.run(['$state', 'socket', function($state, socket){
+	if(!$state.is('root')){
+		socket.emit('isConnected');
+		socket.on('isConntected', function(data){
+			if(!data){
+				$state.go('root');
+			}
+		});
+	}
+	
+	socket.on('disconnect', function(){
+		console.log("disconnected");
+		$state.go('root');
+	});
 }]);

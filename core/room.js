@@ -1,5 +1,7 @@
+var Player = require('./player.js');
+
 module.exports = function(con, rid){
-	var text = '', clients = {}, owner = con;
+	var text = '', clients = {}, owner = con, player = null;
 	
 	Object.observe(clients, updateClients);
 	
@@ -20,11 +22,26 @@ module.exports = function(con, rid){
 		text = data;
 	});
 	
+	owner.on('play', function(sid){
+		player = new Player(owner, clients[sid], text);
+	});
+	
+	owner.on('stop', function(){
+		player = null;
+	});
+	
+	owner.on('getText', function(){
+		owner.emit('setText', text);
+	});
+	
+	owner.on('updateClients', function(){
+		updateClients();
+	});
+	
 	owner.on('disconnect', function(){
 		var manager = require('./manager.js');
 		for(var i in clients){
-			clients[i].socket.emit('kick', {});
-			console.log('disconnect');
+			clients[i].con.emit('kick', {});
 		}
 		manager.deleteRoom(rid);
 	});
@@ -32,19 +49,28 @@ module.exports = function(con, rid){
 	this.addClient = function(con, resolution){
 		clients[con.id] = {
 			id: con.id,
-			socket: con,
+			con: con,
 			ip: con.handshake.address,
 			resolution: resolution
 		};
 		
-		con.on('setResolution', function(data){
+		clients[con.id].con.on('setResolution', function(data){
 			clients[con.id].resolution = data;
 			updateClients();
 		});
 		
-		con.on('disconnect', function(){
+		clients[con.id].con.on('disconnect', function(){
+			console.log("BAUM");
+			
 			clients[con.id] = null;
 			delete clients[con.id];
 		});
+	};
+	
+	this.findClient = function(sid){
+		if(clients[sid] || owner.id === sid){
+			return true;
+		}
+		return false;
 	};
 };

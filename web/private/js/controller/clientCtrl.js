@@ -8,13 +8,11 @@ teleprompter.controller('clientCtrl', ['$scope', '$rootScope', '$http', '$window
 	sendResolution();
 	angular.element($window).on('resize', sendResolution);
 	
-	socket.on('disconnect', function(){
-		console.log("disconnected");
+	socket.on('kick', function(){
 		$state.go('root');
 	});
 	
-	socket.on('kick', function(){
-		console.log("kicked");
-		$state.go('root');
+	socket.on('play', function(data){
+		$scope.text = data;
 	});
 }]);

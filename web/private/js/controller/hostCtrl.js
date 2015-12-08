@@ -1,4 +1,4 @@
-teleprompter.controller('hostCtrl', ['$scope', '$rootScope', '$http', 'socket', function($scope, $rootScope, $http, socket){
+teleprompter.controller('hostCtrl', ['$scope', '$rootScope', '$state', '$http', 'socket', function($scope, $rootScope, $state, $http, socket){
 	$scope.roomId = 'n/a';
 	
 	socket.emit('host');
@@ -8,14 +8,21 @@ teleprompter.controller('hostCtrl', ['$scope', '$rootScope', '$http', 'socket', 
 		});
 	});
 	
-	$scope.$watch('text', function(){
-		socket.emit('setText', $scope.text);
+	$rootScope.$watch('text', function(){
+		socket.emit('setText', $rootScope.text);
 	});
 	
+	socket.emit('updateClients');
 	socket.on('client', function(data){
-		console.log(data[0]);
 		$scope.$apply(function(){
 			$scope.clients = data[0];
 		});
 	});
+	
+	$scope.play = function($event, id){
+		$event.preventDefault();
+		
+		socket.emit('play', id);
+		$state.go('play');
+	};
 }]);

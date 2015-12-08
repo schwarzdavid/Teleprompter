@@ -57,4 +57,8 @@ sio.on('connection', function(socket){
 			socket.emit('join', data);
 		}
 	});
+	
+	socket.on('isConntected', function(data){
+		socket.emit('isConntected', manager.findClient(socket.id));
+	});
 });
