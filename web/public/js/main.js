@@ -80,10 +80,6 @@ teleprompter.controller('clientCtrl', ['$scope', '$rootScope', '$http', '$window
 	socket.on('kick', function(){
 		$state.go('root');
 	});
-	
-	socket.on('play', function(data){
-		$scope.text = data;
-	});
 }]);
 teleprompter.controller('hostCtrl', ['$scope', '$rootScope', '$state', '$http', 'socket', function($scope, $rootScope, $state, $http, socket){
 	$scope.roomId = 'n/a';
@@ -129,9 +125,7 @@ teleprompter.controller('mainCtrl', ['$scope', '$state', '$window', 'socket', fu
 		$state.go('client');
 	});
 }]);
-teleprompter.controller('playCtrl', ['$scope', '$state', 'socket', function($scope, $state, socket){
-	socket.emit('init');
-	
+teleprompter.controller('playCtrl', ['$scope', '$state', '$timeout', 'socket', function($scope, $state, $timeout, socket){
 	socket.on('kick', function(){
 		$state.go('host');
 	});
@@ -142,11 +136,31 @@ teleprompter.directive('teleprompter', ['socket', function(socket){
 		templateUrl: '/page/teleprompter.html',
 		replace: false,
 		link: function(scope, el, attr){
-			socket.on('text', function(data){
-				scope.teleText = data;
+			socket.emit('t_getText');
+			socket.on('t_getText', function(data){
+				scope.$apply(function(){
+					scope.teleText = data[0];
+				});
+			});
+			
+			socket.on('t_setMargin', function(data){
+				console.log(data[0]);
+				angular.element(el).find('p').css('margin-top', data[0]+'px');
 			});
 		}
 	};
+}]);
+teleprompter.directive('trigger', ['socket', function(socket){
+	return {
+		restrict: 'A',
+		link: function(scope, el, attr){
+			angular.element(el).click(function($event){
+				$event.preventDefault();
+				
+				socket.emit(attr.trigger);
+			});
+		}
+	}
 }]);
 teleprompter.factory('socket', [function(){
 	var socket = io.connect();

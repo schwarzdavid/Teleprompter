@@ -11,8 +11,4 @@ teleprompter.controller('clientCtrl', ['$scope', '$rootScope', '$http', '$window
 	socket.on('kick', function(){
 		$state.go('root');
 	});
-	
-	socket.on('play', function(data){
-		$scope.text = data;
-	});
 }]);

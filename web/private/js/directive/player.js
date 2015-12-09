@@ -4,8 +4,16 @@ teleprompter.directive('teleprompter', ['socket', function(socket){
 		templateUrl: '/page/teleprompter.html',
 		replace: false,
 		link: function(scope, el, attr){
-			socket.on('text', function(data){
-				scope.teleText = data;
+			socket.emit('t_getText');
+			socket.on('t_getText', function(data){
+				scope.$apply(function(){
+					scope.teleText = data[0];
+				});
+			});
+			
+			socket.on('t_setMargin', function(data){
+				console.log(data[0]);
+				angular.element(el).find('p').css('margin-top', data[0]+'px');
 			});
 		}
 	};

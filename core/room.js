@@ -60,8 +60,6 @@ module.exports = function(con, rid){
 		});
 		
 		clients[con.id].con.on('disconnect', function(){
-			console.log("BAUM");
-			
 			clients[con.id] = null;
 			delete clients[con.id];
 		});
