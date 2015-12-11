@@ -52,8 +52,12 @@ module.exports = function(host, client, text){
 		host.emit('t_setSize', client.resolution);
 	});
 	
-	host.on('t_size', function(val){
+	host.on('t_speed', function(val){
 		speed = val;
+	});
+	
+	host.on('t_font', function(val){
+		emit('t_font', val);
 	});
 	
 	emit = function(event, data){

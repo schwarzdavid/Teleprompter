@@ -13,7 +13,7 @@ teleprompter.controller('hostCtrl', ['$scope', '$rootScope', '$state', '$http', 
 	});
 	
 	$rootScope.$watch('text', function(){
-		socket.emit('setText', $rootScope.text);
+		socket.emit('setText', ($rootScope.text ? $rootScope.text.replace(/\r?\n/g, '<br>') : null));
 	});
 	
 	socket.emit('updateClients');

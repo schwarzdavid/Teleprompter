@@ -8,6 +8,10 @@ teleprompter.controller('clientCtrl', ['$scope', '$rootScope', '$http', '$window
 	sendResolution();
 	angular.element($window).on('resize', sendResolution);
 	
+	$scope.resolution = {
+		transform: 'rotateY(180deg)'
+	};
+	
 	socket.on('kick', function(){
 		$state.go('root');
 	});

@@ -89,21 +89,20 @@ body {
   min-height: 200px;
 }
 .teleprompter {
-  overflow: hidden;
   display: block;
   font-size: 1.8rem;
   background: #fff;
+  overflow: hidden;
 }
 .teleprompter p {
   margin: 0;
   padding: 200px 20px 50px;
   line-height: 180%;
   font-size: 1em;
-  -webkit-transform: margin .1s linear;
-     -moz-transform: margin .1s linear;
-      -ms-transform: margin .1s linear;
-       -o-transform: margin .1s linear;
-          transform: margin .1s linear;
+  -webkit-transition: margin .1s linear;
+     -moz-transition: margin .1s linear;
+       -o-transition: margin .1s linear;
+          transition: margin .1s linear;
 }
 .teleprompter .arrow {
   display: block;
