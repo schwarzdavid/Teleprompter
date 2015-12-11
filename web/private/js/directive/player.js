@@ -12,7 +12,6 @@ teleprompter.directive('teleprompter', ['socket', function(socket){
 			});
 			
 			socket.on('t_setMargin', function(data){
-				console.log(data[0]);
 				angular.element(el).find('p').css('margin-top', data[0]+'px');
 			});
 		}

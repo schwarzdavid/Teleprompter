@@ -13,6 +13,10 @@ module.exports = function(host, client, text){
 		client.con.emit('t_getText', text);
 	});
 	
+	client.con.on('setResolution', function(){
+		host.emit('t_setSize', client.resolution);
+	});
+	
 	host.on('disconnect', function(){
 		client.con.emit('kick');
 	});
@@ -42,6 +46,14 @@ module.exports = function(host, client, text){
 		
 		margin = 0;
 		emit('t_setMargin', margin);
+	});
+	
+	host.on('t_getSize', function(){
+		host.emit('t_setSize', client.resolution);
+	});
+	
+	host.on('t_size', function(val){
+		speed = val;
 	});
 	
 	emit = function(event, data){

@@ -83,6 +83,10 @@ teleprompter.controller('clientCtrl', ['$scope', '$rootScope', '$http', '$window
 }]);
 teleprompter.controller('hostCtrl', ['$scope', '$rootScope', '$state', '$http', 'socket', function($scope, $rootScope, $state, $http, socket){
 	$scope.roomId = 'n/a';
+	$scope.resolution = {
+		'width': '100vw',
+		'height': '100vh'
+	};
 	
 	socket.emit('host');
 	socket.on('host', function(data){
@@ -125,9 +129,25 @@ teleprompter.controller('mainCtrl', ['$scope', '$state', '$window', 'socket', fu
 		$state.go('client');
 	});
 }]);
-teleprompter.controller('playCtrl', ['$scope', '$state', '$timeout', 'socket', function($scope, $state, $timeout, socket){
+teleprompter.controller('playCtrl', ['$scope', '$state', '$timeout', '$window', 'socket', function($scope, $state, $timeout, $window, socket){
 	socket.on('kick', function(){
 		$state.go('host');
+	});
+	
+	socket.emit('t_getSize');
+	socket.on('t_setSize', function(size){
+		$scope.$apply(function(){
+			var factor = $window.innerWidth/size[0].x*0.95;
+			if($window.innerHeight > $window.innerWidth){
+				factor = $window.innerHeight/size[0].y*0.95;
+			}
+			
+			$scope.resolution = {
+				'width': size[0].x,
+				'height': size[0].y,
+				'transform': 'scale('+factor+')'
+			};
+		});
 	});
 }]);
 teleprompter.directive('teleprompter', ['socket', function(socket){
@@ -144,7 +164,6 @@ teleprompter.directive('teleprompter', ['socket', function(socket){
 			});
 			
 			socket.on('t_setMargin', function(data){
-				console.log(data[0]);
 				angular.element(el).find('p').css('margin-top', data[0]+'px');
 			});
 		}
@@ -157,7 +176,18 @@ teleprompter.directive('trigger', ['socket', function(socket){
 			angular.element(el).click(function($event){
 				$event.preventDefault();
 				
-				socket.emit(attr.trigger);
+				if($event.target.tagName === 'BUTTON'){
+					console.log("click");
+					socket.emit(attr.trigger);
+				}
+			});
+			
+			angular.element(el).change(function($event){
+				$event.preventDefault();
+				
+				console.log(el.val());
+				
+				socket.emit(attr.trigger, el.val());
 			});
 		}
 	}

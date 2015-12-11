@@ -5,7 +5,18 @@ teleprompter.directive('trigger', ['socket', function(socket){
 			angular.element(el).click(function($event){
 				$event.preventDefault();
 				
-				socket.emit(attr.trigger);
+				if($event.target.tagName === 'BUTTON'){
+					console.log("click");
+					socket.emit(attr.trigger);
+				}
+			});
+			
+			angular.element(el).change(function($event){
+				$event.preventDefault();
+				
+				console.log(el.val());
+				
+				socket.emit(attr.trigger, el.val());
 			});
 		}
 	}

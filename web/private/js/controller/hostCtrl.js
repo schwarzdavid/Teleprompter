@@ -1,5 +1,9 @@
 teleprompter.controller('hostCtrl', ['$scope', '$rootScope', '$state', '$http', 'socket', function($scope, $rootScope, $state, $http, socket){
 	$scope.roomId = 'n/a';
+	$scope.resolution = {
+		'width': '100vw',
+		'height': '100vh'
+	};
 	
 	socket.emit('host');
 	socket.on('host', function(data){
