@@ -32,7 +32,7 @@ app.get('*', function(req, res){
 	res.render('template.ejs');
 });
 
-http = app.listen(80, function(err){
+http = app.listen(process.env.OPENSHIFT_INTERNAL_PORT || process.env.PORT || 80, function(err){
 	if(err){
 		throw new Error(err);
 	}
