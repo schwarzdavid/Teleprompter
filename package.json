@@ -1,10 +1,10 @@
 {
   "name": "Teleprompter",
   "version": "1.0.0",
-  "description": "Moschd ma on Telepromptha",
+  "description": "Webbasierter Teleprompter",
   "main": "app.js",
   "scripts": {
-    "test": "nodemon app.js 8080"
+    "start": "node app.js"
   },
   "author": "David Schwarz <schwarz.david10@gmail.com>",
   "license": "Apache 2.0",
